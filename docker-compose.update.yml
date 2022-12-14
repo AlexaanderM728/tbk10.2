@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  gallery:
+    image: diamol/ch09-image-gallery
+  accesslog:
+    image: diamol/ch09-access-log
+  iotd:
+    image: diamol/ch09-image-of-the-day

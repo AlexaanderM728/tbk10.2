@@ -1,0 +1,44 @@
+version: '3.9'
+networks:
+  images-net:
+    name: images-net
+services:
+  accesslog:
+    image: diamol/ch09-access-log
+    networks:
+      images-net: {}
+  gallery:
+    image: diamol/ch09-image-gallery
+    networks:
+      images-net: {}
+    ports:
+    - published: 80
+      target: 80
+  iotd:
+    deploy:
+      replicas: 4
+      rollback_config:
+        failure_action: continue
+        order: start-first
+        parallelism: 4
+      update_config:
+        failure_action: rollback
+        monitor: 90s
+        order: start-first
+        parallelism: 2
+    healthcheck:
+      interval: 5s
+      retries: 2
+      start_period: 10s
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost/image
+      timeout: 20s
+    image: diamol/ch09-image-of-the-day
+    networks:
+      images-net: {}
+    ports:
+    - published: 8080
+      target: 80
